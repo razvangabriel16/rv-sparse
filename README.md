@@ -17,10 +17,11 @@ For the values in this harness (uniformly from [-10, 10]) the chosen value is su
 The prefetch distance of 4 in `__builtin_prefetch(&x[col_indices[k+4]])` is also derived from the same principle: L2 cache latency on modern hardware is roughly 12 cycles, and the loop body executes in approximately 3 cycles, so prefetching 4 iterations ahead
 hides memory latency of irregular gather on `x`. The value is of course dependent on architecture and exposed as a tunable constant in a production-like set.
 
+The second argument 0 in `if (__builtin_expect(fabs(elem) > SPARSITY_TOL, 0))` condition tells the compiler that the branch is sparse (the matrix is ​​sparse so the leading elements are zero). The branch predictor is prepared correctly in this way.
+
 ---
 ### Run
 `make` (in the task description the -lm flag for linker is placed wrong)
 
-The second argument 0 in `if (__builtin_expect(fabs(elem) > SPARSITY_TOL, 0))` condition tells the compiler that the branch is sparse (the matrix is ​​sparse so the leading elements are zero). The branch predictor is prepared correctly in this way.
 
 For larger or more specific inputs additional optimizations are applicable (eg. SIMD/AVX vectorization, Cuthill-McKee reordering etc.)I think these are beyond the scope of this implementation given the matrix dimensions involved.
